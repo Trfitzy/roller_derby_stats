@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 
-from utilities import pull_data, get_X_features_crg, get_X_features_op
+from preprocess_functions import pull_data, get_X_features_crg, get_X_features_op, get_X_skater_labels
 
 class Model:
 
@@ -10,9 +10,13 @@ class Model:
         # features need to be hardcoded because they have unique preprocessing.
         self.crg_team = crg_team #options: VL or BS
         self.X_features = [
-            'jam_id', 'lead', 'no_initial', 'trips', 'jammer_penalty_counter', 'blocker_penalty_counter',
-            'op_jam_id', 'op_lead', 'op_no_initial', 'op_trips', 'op_jammer_penalty_counter', 'op_blocker_penalty_counter']
-        self.X_skater_labels = ['jammer', 'blocker', 'pivot']
+            'jam_id', 'lead', 'no_initial', 'trips', 
+            'jammer_penalty_counter', 'blocker_penalty_counter',
+            'op_lead', 'op_no_initial', 'op_trips', 
+            'op_jammer_penalty_counter', 'op_blocker_penalty_counter'
+            ]
+        
+        self.X_skater_labels = []
         self.X_columns = []
         self.y_label = 'point_diff'
         self.df_data = pull_data(self.crg_team)
@@ -24,8 +28,11 @@ class Model:
         # TODO: Error checking
         self.df_features['point_diff'] = self.df_data['Jam Total'] - self.df_data['OP_Jam Total']
 
-        self.df_features = get_X_features_crg(self.df_data, self.df_features, self.X_features)
-        self.df_features = get_X_features_op(self.df_data, self.df_features, self.X_features)
+        get_X_features_crg(self.df_data, self.df_features, self.X_features)
+        get_X_features_op(self.df_data, self.df_features, self.X_features)
+        self.df_features = get_X_skater_labels(self.df_data, self.df_features, self.X_skater_labels, pivot=False)
+    
+        self.X_columns = self.X_features + self.X_skater_labels
 
     #def train(self):
 

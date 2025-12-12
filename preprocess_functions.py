@@ -60,7 +60,7 @@ def get_X_features_crg(df_data, df_features, feature_list):
     if 'lead' in feature_list:
         df_features['lead'] = df_data['LEAD'].replace({np.nan: False, "X": True}).infer_objects(copy=False)
     
-    if 'no_inital' in feature_list:
+    if 'no_initial' in feature_list:
         df_features['no_initial'] = df_data['NI'].replace({np.nan: False, "X": True}).infer_objects(copy=False)
     
     if 'trips' in feature_list:
@@ -81,14 +81,14 @@ def get_X_features_crg(df_data, df_features, feature_list):
             df_data[col] = df_data[col].replace({np.nan: 0, '+': 1, '-': 1, '$': 1, 'S': 1, '3':0}).infer_objects(copy=False)
             df_features['blocker_penalty_counter'] += df_data[col]
     
-    return df_features
+    #return df_features
 
 def get_X_features_op(df_data, df_features, feature_list):
     
     if 'op_lead' in feature_list:
         df_features['op_lead'] = df_data['OP_LEAD'].replace({np.nan: False, "X": True}).infer_objects(copy=False)
     
-    if 'op_no_inital' in feature_list:
+    if 'op_no_initial' in feature_list:
         df_features['op_no_initial'] = df_data['OP_NI'].replace({np.nan: False, "X": True}).infer_objects(copy=False)
     
     if 'op_trips' in feature_list:
@@ -109,29 +109,38 @@ def get_X_features_op(df_data, df_features, feature_list):
             df_data['OP_'+col] = df_data['OP_'+col].replace({np.nan: 0, '+': 1, '-': 1, '$': 1, 'S': 1,'s': 1, '3':0}).infer_objects(copy=False)
             df_features['op_blocker_penalty_counter'] += df_data['OP_'+col]
     
-    return df_features
+    #return df_features
 
 def get_X_skater_labels(df_data, df_features, feature_list, pivot=True):
 
     blocker_cols = ['Blocker_1', 'Blocker_2', 'Blocker_3']
-    if not pivot:
+    if pivot:
+        df_concated = pd.concat([df_data['Blocker_1'],df_data['Blocker_2'],df_data['Blocker_3']]).unique()
+        
+        df_pivot= pd.get_dummies(df_data['Pivot'], columns = 'Pivot')
+        for col in df_pivot:
+            df_features[str(col)+"_pivot"] = df_pivot[col].astype(int)
+            feature_list.append(str(col)+"_pivot")
+    
+    else:
         blocker_cols.append('Pivot')
+        df_concated = pd.concat([df_data['Pivot'],df_data['Blocker_1'],df_data['Blocker_2'],df_data['Blocker_3']]).unique()
 
-    df_encoded = build_encoded_matrix(
-        df_data[blocker_cols], blocker_cols, 
-        pd.concat([df_data['Pivot'],df_data['Blocker_1'],df_data['Blocker_2'],df_data['Blocker_3']]).unique()
-    )
+    
+    df_encoded = build_encoded_matrix(df_data[blocker_cols], blocker_cols, df_concated) 
     feature_list += [col for col in df_encoded.columns]
     df_features = pd.concat([df_features, df_encoded], axis=1)
 
-
+    
     df_jammer= pd.get_dummies(df_data['Jammer'], columns = 'Jammer')
     for col in df_jammer:
         df_features[str(col)+"_jammer"] = df_jammer[col].astype(int)
         feature_list.append(str(col)+"_jammer")
+    
+    # Note: why is return needed here? why isn't this working quite right?
+    return df_features
 
-    if pivot:
-        df_pivot= pd.get_dummies(df_data['Pivot'], columns = 'Pivot')
-        for col in df_jammer:
-            df_features[str(col)+"_pivot"] = df_jammer[col].astype(int)
-            feature_list.append(str(col)+"_pivot")
+
+
+
+        
