@@ -10,27 +10,24 @@ import warnings
 
 warnings.filterwarnings('ignore')
 
-model_help = """Runs model comparisons for Retina Image Segmentation"""
+model_help = """Derby Prediction Model: Used to train, test, and predict skater combinations"""
 
 def parse_args():
     arg_parser = ArgumentParser(
-        prog="Retina_Image_Segmentation", usage="Trains and tests 3 models for retina image segmentation"
+        prog="Derby Prediction Model", usage="Used to train, test, and predict skater combinations"
     )
     arg_parser.add_argument(
-        "action", type=str, choices=["train", "test"], help=model_help)
+        "action", type=str, choices=["train", "test", 'predict'], help=model_help)
     arg_parser.add_argument(
         "data_path", type=str)
-    
     
     return arg_parser.parse_args()
 
 
 if __name__ == "__main__":
     input_args = parse_args()
-  #"C:/Users/trfit/Documents/learning/UC/Deep_Learning/DL_HW3/Data"
 
-    # Pull in data
-    #try:
+    # WIP v
     X_train, y_train = load_data(input_args.data_path + "/Data/train")
     X_test, y_test = load_data(input_args.data_path + "/Data/test")
 
