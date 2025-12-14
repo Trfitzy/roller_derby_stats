@@ -14,11 +14,12 @@ class Model:
         # features need to be hardcoded because they have unique preprocessing.
         self.crg_team = crg_team #options: VL or BS
         self.X_features = [
-            'jam_id', 'lead', #'no_initial', 
+           #'jam_id', 
+           'lead', 'no_initial', 
             'trips', 
             'jammer_penalty_counter', 'blocker_penalty_counter',
-            #'op_lead', 'op_no_initial', 'op_trips', 
-            #'op_jammer_penalty_counter', 'op_blocker_penalty_counter'
+            'op_lead', 'op_no_initial', 'op_trips', 
+            'op_jammer_penalty_counter', 'op_blocker_penalty_counter'
             ]
         
         self.X_skater_labels = []
@@ -34,6 +35,7 @@ class Model:
         # TODO: Error checking
         self.df_features['point_diff'] = self.df_data['Jam Total'] - self.df_data['OP_Jam Total']
 
+        # TODO: Error checking for unexected characters
         get_X_features_crg(self.df_data, self.df_features, self.X_features)
         get_X_features_op(self.df_data, self.df_features, self.X_features)
         self.df_features = get_X_skater_labels(self.df_data, self.df_features, self.X_skater_labels, pivot=False)
@@ -80,7 +82,9 @@ class Model:
     #def test(self):
 
     #def predict(self):
-
 model = Model('VL')
 model.preprocess_data()
+print(model.df_features.shape)
+print(model.df_features.columns)
+print(model.df_features.describe())
 model.train_test_known_data()

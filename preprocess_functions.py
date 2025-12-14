@@ -58,10 +58,10 @@ def get_X_features_crg(df_data, df_features, feature_list):
         df_features['jam_id'] = df_data['OP'] +"_"+ df_data['Half'] +"_"+ df_data['Jam']
     
     if 'lead' in feature_list:
-        df_features['lead'] = df_data['LEAD'].replace({np.nan: False, "X": True}).infer_objects(copy=False)
+        df_features['lead'] = df_data['LEAD'].replace({np.nan: False, "X": True, "x": True}).infer_objects(copy=False)
     
     if 'no_initial' in feature_list:
-        df_features['no_initial'] = df_data['NI'].replace({np.nan: False, "X": True}).infer_objects(copy=False)
+        df_features['no_initial'] = df_data['NI'].replace({np.nan: False, "X": True, "x": True}).infer_objects(copy=False)
     
     if 'trips' in feature_list:
         df_features['trips'] = df_data['Trips']
@@ -86,10 +86,10 @@ def get_X_features_crg(df_data, df_features, feature_list):
 def get_X_features_op(df_data, df_features, feature_list):
     
     if 'op_lead' in feature_list:
-        df_features['op_lead'] = df_data['OP_LEAD'].replace({np.nan: False, "X": True}).infer_objects(copy=False)
+        df_features['op_lead'] = df_data['OP_LEAD'].replace({np.nan: False, "X": True, "x": True}).infer_objects(copy=False)
     
     if 'op_no_initial' in feature_list:
-        df_features['op_no_initial'] = df_data['OP_NI'].replace({np.nan: False, "X": True}).infer_objects(copy=False)
+        df_features['op_no_initial'] = df_data['OP_NI'].replace({np.nan: False, "X": True, "x": True}).infer_objects(copy=False)
     
     if 'op_trips' in feature_list:
         df_features['op_trips'] = df_data['OP_Trips']
