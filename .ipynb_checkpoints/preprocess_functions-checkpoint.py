@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 
 def pull_data(crg_team):
 
@@ -13,7 +12,7 @@ def pull_data(crg_team):
             "VL_Athens_data.csv",
             "VL_Terrorz_data.csv"]
     elif crg_team == 'BS':
-        files = [
+        BS_files = [
             "BS_Akron_data.csv",
             "BS_Athens_data.csv",
             "BS_Great_Lakes_data.csv",
@@ -69,7 +68,7 @@ def get_X_features_crg(df_data, df_features, feature_list):
 
     if 'jammer_penalty_counter' in feature_list:
         for col in ['Jammer_Box_1', 'Jammer_Box_2', 'Jammer_Box_3']:
-            df_data[col] = df_data[col].replace({np.nan: 0, '+': 1, '-': 1, '$': 1, 'S': 1}).infer_objects(copy=False)
+            df_data[col] = df_data[col].replace({np.nan: 0, '+': 1, '-': 1, '$': 1}).infer_objects(copy=False)
         df_features['jammer_penalty_counter'] = df_data['Jammer_Box_1'] + df_data['Jammer_Box_2'] + df_data['Jammer_Box_3']
 
     if 'blocker_penalty_counter' in feature_list:
@@ -97,8 +96,7 @@ def get_X_features_op(df_data, df_features, feature_list):
 
     if 'op_jammer_penalty_counter' in feature_list:
         for col in ['OP_Jammer_Box_1', 'OP_Jammer_Box_2', 'OP_Jammer_Box_3']:
-            df_data[col] = df_data[col].replace({np.nan: 0, '+': 1, '-': 1, '$': 1, 'S':1}).infer_objects(copy=False)
-            print(df_data[col].unique())
+            df_data[col] = df_data[col].replace({np.nan: 0, '+': 1, '-': 1, '$': 1}).infer_objects(copy=False)
         df_features['op_jammer_penalty_counter'] = df_data['OP_Jammer_Box_1'] + df_data['OP_Jammer_Box_2'] + df_data['OP_Jammer_Box_3']
 
     if 'op_blocker_penalty_counter' in feature_list:
@@ -141,21 +139,6 @@ def get_X_skater_labels(df_data, df_features, feature_list, pivot=True):
     
     # Note: why is return needed here? why isn't this working quite right?
     return df_features
-
-def plot_results(y_pred, y_act):
-    
-    plt.fill_between(range(0,len(y_act)), y_act-3, y_act+3)
-    plt.plot(y_act,'--o', label='actual point diff', color='grey')
-    plt.plot(y_pred,'-o',label='predicted point diff',color='orange')
-    
-    error = abs(y_act - y_pred)
-    accuracy = round((error <= 3).value_counts()[True]/len(y_act)*100,2)
-    avg_error = round(np.mean(error),4)
-
-    plt.title ("y_pred compared to y_actual\n average error: "+ str(avg_error)+", accuracy: "+ str(accuracy)+"%")
-    plt.legend()
-    plt.grid()
-    plt.show()
 
 
 
